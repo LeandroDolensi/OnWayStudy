@@ -1,0 +1,85 @@
+<div class="main-container">
+  <!-- Cabeçalho da página principal -->
+  <header class="main-header">
+    <img src="assets/logo_icon.png" alt="Logo OnWayStudy" class="header-logo" />
+    <div class="user-actions">
+      <!-- Futuramente, aqui teremos o nome do usuário e o botão de logout -->
+      <button mat-icon-button matTooltip="Sair">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal da página -->
+  <main class="content-area">
+    <div class="table-header">
+      <h1>Minhas Atividades</h1>
+      <div class="header-buttons">
+        <button mat-flat-button color="accent" (click)="cadastrarDisciplina()">
+          <mat-icon>class</mat-icon>
+          Cadastrar Disciplina
+        </button>
+        <button mat-flat-button color="primary" (click)="cadastrarAtividade()">
+          <mat-icon>add_task</mat-icon>
+          Cadastrar Atividade
+        </button>
+      </div>
+    </div>
+
+    <!-- Container da tabela para estilização -->
+    <div class="table-container mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- Coluna Disciplina -->
+        <ng-container matColumnDef="disciplina">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Disciplina</th>
+          <td mat-cell *matCellDef="let row">{{ row.disciplina }}</td>
+        </ng-container>
+
+        <!-- Coluna Atividade -->
+        <ng-container matColumnDef="atividade">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Atividade</th>
+          <td mat-cell *matCellDef="let row">{{ row.atividade }}</td>
+        </ng-container>
+
+        <!-- Coluna Data -->
+        <ng-container matColumnDef="data">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Data</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.data | date : "dd/MM/yyyy" }}
+          </td>
+        </ng-container>
+
+        <!-- Coluna Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [ngClass]="row.status.toLowerCase().replace(' ', '-')"
+              >{{ row.status }}</span
+            >
+          </td>
+        </ng-container>
+
+        <!-- Coluna Resultado -->
+        <ng-container matColumnDef="resultado">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Resultado</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.resultado !== null ? row.resultado : "N/A" }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <!-- Paginador da tabela -->
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageSize]="10"
+        aria-label="Selecione a página de atividades"
+      >
+      </mat-paginator>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,149 @@
+// Importando a fonte e ícones
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+// --- Variáveis de Cores ---
+$neon-purple: #9b59b6;
+$turquoise-blue: #1abc9c;
+$hot-pink: #e91e63;
+$white: #ffffff;
+$dark-bg: #1e1e2f; // Um fundo escuro para o conteúdo
+$light-bg: #282a36; // Fundo para elementos como a tabela
+$text-primary: #f8f8f2;
+$text-secondary: #bd93f9;
+
+:host {
+  font-family: "Inter", sans-serif;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: $dark-bg;
+  color: $text-primary;
+}
+
+// --- Cabeçalho ---
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(
+    90deg,
+    rgba(26, 188, 156, 0.1),
+    rgba(155, 89, 182, 0.1)
+  );
+  border-bottom: 1px solid rgba($white, 0.1);
+  flex-shrink: 0;
+
+  .header-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .user-actions button {
+    color: $text-primary;
+  }
+}
+
+// --- Área de Conteúdo ---
+.content-area {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    button[color="primary"] {
+      background-color: $hot-pink;
+    }
+
+    button[color="accent"] {
+      background-color: $turquoise-blue;
+    }
+  }
+}
+
+// --- Container e Estilo da Tabela ---
+.table-container {
+  background-color: $light-bg;
+  border-radius: 12px;
+  overflow: hidden; // Garante que os cantos da tabela fiquem arredondados
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-table {
+  background-color: transparent;
+}
+
+.mat-mdc-header-cell {
+  background-color: rgba($dark-bg, 0.5);
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.mat-mdc-cell {
+  color: $text-primary;
+  border-bottom-color: rgba($white, 0.1);
+}
+
+.mat-mdc-paginator {
+  background-color: $light-bg;
+  color: $text-primary;
+}
+
+// --- Badge de Status ---
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $dark-bg;
+
+  &.pendente {
+    background-color: #f1c40f;
+  }
+  &.em-andamento {
+    background-color: #3498db;
+  }
+  &.concluído {
+    background-color: $turquoise-blue;
+  }
+}
+
+// --- Responsividade ---
+@media (max-width: 768px) {
+  .content-area {
+    padding: 1rem;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
