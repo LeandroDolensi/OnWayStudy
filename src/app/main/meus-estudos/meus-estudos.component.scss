@@ -3,7 +3,7 @@
 
 // --- Variáveis de Cores ---
 $neon-purple: #9b59b6;
-$turquoise-blue: #1abc9c;
+$turquoise-blue: #1abca1;
 $hot-pink: #e91e63;
 $white: #ffffff;
 $dark-bg: #1e1e2f; // Um fundo escuro para o conteúdo
@@ -44,6 +44,17 @@ $hover-bg: #3a3c4e;
     width: auto;
   }
 
+  .main-title {
+    background-image: linear-gradient(100deg, $neon-purple, $turquoise-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    font-size: x-large;
+    height: 23px;
+    width: auto;
+  }
+
   .user-actions button {
     color: $text-primary;
   }
@@ -78,10 +89,18 @@ $hover-bg: #3a3c4e;
 
     button[color="primary"] {
       background-color: $hot-pink;
+      transition: transform 0.2s ease-out;
+      &:hover {
+        transform: scale(1.1);
+      }
     }
 
     button[color="accent"] {
       background-color: $turquoise-blue;
+      transition: transform 0.2s ease-out;
+      &:hover {
+        transform: scale(1.1);
+      }
     }
   }
 }
@@ -102,7 +121,7 @@ table {
 }
 
 .mat-mdc-row {
-  transition: background-color 0.3s ease-out; // Transição suave
+  transition: background-color 0.4s ease-out; // Transição suave
 
   &:hover {
     background-color: $hover-bg; // Cor de fundo ao passar o rato
