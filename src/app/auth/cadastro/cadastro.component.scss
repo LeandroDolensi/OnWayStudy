@@ -1,0 +1,157 @@
+// Importando a fonte "Inter" do Google Fonts
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+// --- Variáveis de Cores ---
+$neon-purple: #9b59b6;
+$turquoise-blue: #1abc9c;
+$hot-pink: #e91e63;
+$white: #ffffff;
+$light-gray-bg: rgba(255, 255, 255, 0.1);
+$border-color: rgba(255, 255, 255, 0.2);
+
+// --- Estilo do Componente Host ---
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  font-family: "Inter", sans-serif;
+  position: relative;
+  overflow: hidden;
+
+  // Fundo com gradiente animado
+  background: linear-gradient(135deg, $turquoise-blue, $neon-purple, $hot-pink);
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// --- Container Principal ---
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  position: relative;
+}
+
+// --- Estilo do Logo ---
+.cadastro-logo {
+  position: absolute; // Posicionamento absoluto
+  top: 1rem; // Distância do topo
+  left: 1rem; // Distância da esquerda
+  max-width: 300px; // Tamanho ajustado para o canto
+  width: 40%;
+  height: auto;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  z-index: 10; // Garante que o logo fique acima de outros elementos
+}
+
+// --- Estilo do Card ---
+mat-card {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  background: $light-gray-bg;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid $border-color;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+mat-card-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $white;
+  margin-bottom: 1.5rem;
+}
+
+// --- Formulário ---
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; // Diminuído o gap para acomodar as mensagens de erro
+}
+
+::ng-deep .mat-mdc-form-field {
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px 8px 0 0;
+  }
+  .mdc-floating-label,
+  .mat-mdc-form-field-error {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .mat-mdc-input-element {
+    color: $white;
+  }
+  .mat-mdc-form-field-focus-overlay {
+    background-color: $hot-pink !important;
+  }
+}
+
+// --- Botões ---
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+button[mat-raised-button] {
+  padding: 12px 0;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 1rem;
+  color: $white;
+  background-color: $hot-pink;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:not([disabled]):hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba($hot-pink, 0.4);
+  }
+}
+
+button[mat-button] {
+  color: black;
+  font-weight: 500;
+  border-radius: 50px;
+  padding: 10px 0;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba($turquoise-blue, 0.1);
+  }
+}
+
+// --- Responsividade ---
+@media (max-width: 600px) {
+  .cadastro-logo {
+    top: 1.5rem;
+    left: 1.5rem;
+    max-width: 120px;
+  }
+  mat-card {
+    padding: 2rem 1.5rem;
+  }
+  mat-card-title {
+    font-size: 1.8rem;
+  }
+}

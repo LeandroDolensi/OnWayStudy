@@ -2,6 +2,7 @@
 
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
+import { CadastroComponent } from './auth/cadastro/cadastro.component';
 
 export const routes: Routes = [
   // A rota de login
@@ -9,7 +10,10 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent,
   },
-  // Rota padrão que redireciona para o login
+  {
+    path: 'cadastro',
+    component: CadastroComponent,
+  },
   {
     path: '',
     redirectTo: '/login',

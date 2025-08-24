@@ -3,35 +3,41 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { LoginPayload, LoginResponse } from '../models/login.model';
+import { RegisterPayload } from '../models/login.model'; // Crie este modelo
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:80/login';
+  private apiUrl = 'http://localhost:80'; // URL base da API
 
   constructor(private http: HttpClient) {}
 
+  // Método de Login
   login(payload: LoginPayload): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.apiUrl, payload).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, payload).pipe(
       tap((response) => {
-        // Lógica para armazenar o token, se houver
         console.log('Login bem-sucedido:', response);
       }),
       catchError(this.handleError)
     );
   }
 
+  // Novo método de Cadastro
+  register(payload: RegisterPayload): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/user`, payload).pipe(
+      tap((response) => {
+        console.log('Cadastro realizado com sucesso:', response);
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
-    if (error.status === 404) {
-      console.error('Erro: Nickname não encontrado.', error.message);
-    } else if (error.status === 400) {
-      console.error('Erro: Senha incorreta.', error.message);
-    } else {
-      console.error('Erro desconhecido:', error.message);
-    }
+    // Tratamento de erro genérico. Pode ser melhorado.
+    console.error(`Erro ${error.status}: ${error.message}`);
     return throwError(
-      () => new Error('Falha no login. Por favor, tente novamente.')
+      () => new Error('Ocorreu um erro. Por favor, tente novamente.')
     );
   }
 }
