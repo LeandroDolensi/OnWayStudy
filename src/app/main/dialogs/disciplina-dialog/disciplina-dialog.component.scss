@@ -5,10 +5,9 @@ $dark-bg: #1e1e2f;
 $text-primary: #1abc9c;
 $text-secondary: #bd93f9;
 $border-color: rgba(255, 255, 255, 0.2);
+$white: #f8f8f2;
 
 // --- Estilo Geral do Modal ---
-// Usamos ::ng-deep para garantir que os estilos sejam aplicados
-// aos componentes do Angular Material.
 :host ::ng-deep .mat-mdc-dialog-container {
   .mdc-dialog__surface {
     background-color: $light-bg;
@@ -16,7 +15,6 @@ $border-color: rgba(255, 255, 255, 0.2);
   }
 }
 
-// Título do Modal
 h1[mat-dialog-title] {
   color: $text-primary;
   font-weight: 700;
@@ -24,34 +22,35 @@ h1[mat-dialog-title] {
   padding-bottom: 1rem;
 }
 
-// Conteúdo do Modal
 div[mat-dialog-content] {
   padding-top: 1.5rem;
   color: $text-primary;
 }
 
-// --- A CORREÇÃO PARA O LABEL CORTADO ---
+// Novo estilo para o formulário
+.disciplina-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 mat-form-field {
   width: 100%;
 
-  // Altera a cor do label flutuante
   .mdc-floating-label {
     color: $text-secondary;
   }
 
-  // Altera a cor do texto do input
   .mat-mdc-input-element {
     color: $text-primary;
   }
 
-  // Altera a cor da borda
   .mdc-notched-outline__leading,
   .mdc-notched-outline__notch,
   .mdc-notched-outline__trailing {
     border-color: $border-color !important;
   }
 
-  // Altera a cor da borda em foco
   &.mat-focused {
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
@@ -65,7 +64,6 @@ mat-form-field {
   }
 }
 
-// Ações (botões)
 div[mat-dialog-actions] {
   padding-top: 1rem;
 
@@ -75,7 +73,7 @@ div[mat-dialog-actions] {
 
   button[mat-flat-button] {
     background-color: $hot-pink;
-    color: white;
+    color: $white;
   }
 }
 

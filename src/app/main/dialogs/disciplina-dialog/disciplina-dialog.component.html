@@ -1,9 +1,27 @@
 <h1 mat-dialog-title>Cadastrar Nova Disciplina</h1>
 <div mat-dialog-content>
-  <form [formGroup]="form">
+  <form [formGroup]="form" class="disciplina-form">
+    <!-- Campo Nome -->
     <mat-form-field appearance="outline">
       <mat-label>Nome da Disciplina</mat-label>
       <input matInput formControlName="nome" cdkFocusInitial />
+    </mat-form-field>
+
+    <!-- Novo Campo Semestre -->
+    <mat-form-field appearance="outline">
+      <mat-label>Semestre</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="semestre"
+        placeholder="Ex: 3"
+      />
+    </mat-form-field>
+
+    <!-- Novo Campo Informações Adicionais -->
+    <mat-form-field appearance="outline">
+      <mat-label>Informações Adicionais (Opcional)</mat-label>
+      <textarea matInput formControlName="informacoesAdicionais"></textarea>
     </mat-form-field>
   </form>
 </div>

@@ -152,13 +152,13 @@ export class MeusEstudosComponent implements AfterViewInit {
   cadastrarDisciplina() {
     const dialogRef = this.dialog.open(DisciplinaDialogComponent, {
       width: '400px',
-      backdropClass: 'blurred-backdrop', // Classe para o fundo embaçado
+      backdropClass: 'blurred-backdrop',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.nome) {
-        console.log('Nova disciplina:', result.nome);
-        // Adiciona a nova disciplina à lista
+      // Altere a verificação de 'result.nome' para apenas 'result'
+      if (result) {
+        console.log('Dados da nova disciplina:', result); // Agora imprime o objeto completo
         this.disciplinasCadastradas.push(result.nome);
         // Futuramente, aqui você chamaria o serviço para salvar no backend
       }

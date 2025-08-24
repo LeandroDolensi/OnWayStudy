@@ -35,18 +35,23 @@ export class DisciplinaDialogComponent {
   ) {
     this.form = this.fb.group({
       nome: ['', Validators.required],
+      // Novo campo para o semestre, numérico e obrigatório
+      semestre: [
+        '',
+        [Validators.required, Validators.pattern('^[1-9][0-9]*$')],
+      ],
+      // Novo campo para informações adicionais, opcional
+      informacoesAdicionais: [''],
     });
   }
 
   onSave(): void {
     if (this.form.valid) {
-      // Fecha o modal e retorna o valor do formulário
       this.dialogRef.close(this.form.value);
     }
   }
 
   onCancel(): void {
-    // Fecha o modal sem retornar dados
     this.dialogRef.close();
   }
 }
