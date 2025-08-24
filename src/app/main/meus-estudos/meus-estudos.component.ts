@@ -8,96 +8,47 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog } from '@angular/material/dialog'; // Importar MatDialog
+import { MatDialog } from '@angular/material/dialog';
 
-// Importar os componentes dos modais
 import { DisciplinaDialogComponent } from '../dialogs/disciplina-dialog/disciplina-dialog.component';
 import { AtividadeDialogComponent } from '../dialogs/atividade-dialog/atividade-dialog.component';
 
 export interface Atividade {
+  id: number; // Adicionando um ID para facilitar a edição
   disciplina: string;
   atividade: string;
   data: Date;
   status: 'Pendente' | 'Em Andamento' | 'Concluído';
+  peso: number | null;
   resultado: number | null;
 }
 
 const ELEMENT_DATA: Atividade[] = [
   {
+    id: 1,
     disciplina: 'Cálculo II',
     atividade: 'Prova 1',
     data: new Date('2024-09-10'),
     status: 'Pendente',
+    peso: 4,
     resultado: null,
   },
   {
+    id: 2,
     disciplina: 'Física Quântica',
     atividade: 'Trabalho em Grupo',
     data: new Date('2024-09-15'),
     status: 'Pendente',
+    peso: 3,
     resultado: null,
   },
   {
+    id: 3,
     disciplina: 'Algoritmos Avançados',
     atividade: 'Entrega do Projeto 1',
     data: new Date('2024-09-20'),
     status: 'Em Andamento',
-    resultado: null,
-  },
-  {
-    disciplina: 'Engenharia de Software',
-    atividade: 'Apresentação do Seminário',
-    data: new Date('2024-08-30'),
-    status: 'Concluído',
-    resultado: 8.5,
-  },
-  {
-    disciplina: 'Banco de Dados',
-    atividade: 'Prova 2',
-    data: new Date('2024-10-01'),
-    status: 'Pendente',
-    resultado: null,
-  },
-  {
-    disciplina: 'Redes de Computadores',
-    atividade: 'Lista de Exercícios 3',
-    data: new Date('2024-09-25'),
-    status: 'Em Andamento',
-    resultado: null,
-  },
-  {
-    disciplina: 'Inteligência Artificial',
-    atividade: 'Implementação do Algoritmo Genético',
-    data: new Date('2024-11-05'),
-    status: 'Pendente',
-    resultado: null,
-  },
-  {
-    disciplina: 'Cálculo II',
-    atividade: 'Lista de Exercícios 4',
-    data: new Date('2024-09-05'),
-    status: 'Concluído',
-    resultado: 9.0,
-  },
-  {
-    disciplina: 'Física Quântica',
-    atividade: 'Prova Final',
-    data: new Date('2024-11-20'),
-    status: 'Pendente',
-    resultado: null,
-  },
-  {
-    disciplina: 'Engenharia de Software',
-    atividade: 'Teste de Usabilidade',
-    data: new Date('2024-10-10'),
-    status: 'Pendente',
-    resultado: null,
-  },
-  {
-    disciplina: 'Banco de Dados',
-    atividade: 'Projeto Final',
-    data: new Date('2024-11-15'),
-    status: 'Pendente',
+    peso: 3,
     resultado: null,
   },
 ];
@@ -118,16 +69,18 @@ const ELEMENT_DATA: Atividade[] = [
   styleUrl: './meus-estudos.component.scss',
 })
 export class MeusEstudosComponent implements AfterViewInit {
+  // Adicionando a coluna 'acoes'
   displayedColumns: string[] = [
     'disciplina',
     'atividade',
     'data',
     'status',
+    'peso',
     'resultado',
+    'acoes',
   ];
   dataSource: MatTableDataSource<Atividade>;
 
-  // Lista de disciplinas para passar para o modal de atividade
   disciplinasCadastradas: string[] = [
     'Cálculo II',
     'Física Quântica',
@@ -135,11 +88,15 @@ export class MeusEstudosComponent implements AfterViewInit {
     'Engenharia de Software',
     'Banco de Dados',
   ];
+  private statusCycle: Atividade['status'][] = [
+    'Pendente',
+    'Em Andamento',
+    'Concluído',
+  ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  // Injetar o MatDialog no construtor
   constructor(public dialog: MatDialog) {
     this.dataSource = new MatTableDataSource(ELEMENT_DATA);
   }
@@ -149,6 +106,49 @@ export class MeusEstudosComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
+  // --- NOVAS FUNÇÕES DE EDIÇÃO ---
+
+  trocarStatus(atividade: Atividade): void {
+    const currentIndex = this.statusCycle.indexOf(atividade.status);
+    const nextIndex = (currentIndex + 1) % this.statusCycle.length;
+    atividade.status = this.statusCycle[nextIndex];
+
+    console.log(
+      `Status de '${atividade.atividade}' alterado para '${atividade.status}'`
+    );
+    // Futuramente, aqui você chamaria o serviço para salvar a alteração no backend
+    this.dataSource._updateChangeSubscription(); // Força a atualização da tabela
+  }
+
+  editarAtividade(atividade: Atividade): void {
+    const dialogRef = this.dialog.open(AtividadeDialogComponent, {
+      width: '600px',
+      backdropClass: 'blurred-backdrop',
+      // Passamos os dados da atividade e a lista de disciplinas para o modal
+      data: {
+        atividade: atividade,
+        disciplinas: this.disciplinasCadastradas,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Atividade atualizada:', result);
+        // Encontra a atividade no array e atualiza os seus dados
+        const index = this.dataSource.data.findIndex(
+          (a) => a.id === atividade.id
+        );
+        if (index > -1) {
+          this.dataSource.data[index] = {
+            ...this.dataSource.data[index],
+            ...result,
+          };
+          this.dataSource.data = [...this.dataSource.data]; // Dispara a atualização da tabela
+        }
+      }
+    });
+  }
+
   cadastrarDisciplina() {
     const dialogRef = this.dialog.open(DisciplinaDialogComponent, {
       width: '400px',
@@ -156,11 +156,9 @@ export class MeusEstudosComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      // Altere a verificação de 'result.nome' para apenas 'result'
       if (result) {
-        console.log('Dados da nova disciplina:', result); // Agora imprime o objeto completo
+        console.log('Dados da nova disciplina:', result);
         this.disciplinasCadastradas.push(result.nome);
-        // Futuramente, aqui você chamaria o serviço para salvar no backend
       }
     });
   }
@@ -169,13 +167,14 @@ export class MeusEstudosComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(AtividadeDialogComponent, {
       width: '600px',
       backdropClass: 'blurred-backdrop',
-      data: { disciplinas: this.disciplinasCadastradas }, // Passa a lista de disciplinas para o modal
+      data: { disciplinas: this.disciplinasCadastradas },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Nova atividade:', result);
-        // Adiciona a nova atividade à tabela
+
+        // A lógica existente já suporta o novo campo 'peso'
         const novaAtividade: Atividade = {
           ...result,
           data: new Date(result.data),
@@ -183,7 +182,7 @@ export class MeusEstudosComponent implements AfterViewInit {
 
         const data = this.dataSource.data;
         data.push(novaAtividade);
-        this.dataSource.data = data; // Atualiza a tabela
+        this.dataSource.data = data;
       }
     });
   }

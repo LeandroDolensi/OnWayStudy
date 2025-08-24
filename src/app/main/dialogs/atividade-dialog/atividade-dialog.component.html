@@ -1,7 +1,6 @@
 <h1 mat-dialog-title>Cadastrar Nova Atividade</h1>
 <div mat-dialog-content>
   <form [formGroup]="form" class="atividade-form">
-    <!-- Seletor de Disciplina -->
     <mat-form-field appearance="outline">
       <mat-label>Disciplina</mat-label>
       <mat-select formControlName="disciplina">
@@ -11,13 +10,11 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- Nome da Atividade -->
     <mat-form-field appearance="outline">
       <mat-label>Nome da Atividade</mat-label>
       <input matInput formControlName="atividade" cdkFocusInitial />
     </mat-form-field>
 
-    <!-- Seletor de Data -->
     <mat-form-field appearance="outline">
       <mat-label>Data de Entrega</mat-label>
       <input matInput [matDatepicker]="picker" formControlName="data" />
@@ -25,7 +22,6 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <!-- Seletor de Status -->
     <mat-form-field appearance="outline">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
@@ -35,7 +31,17 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- Resultado (Opcional) -->
+    <!-- Novo Campo Peso -->
+    <mat-form-field appearance="outline">
+      <mat-label>Peso (Opcional)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="peso"
+        placeholder="Ex: 4"
+      />
+    </mat-form-field>
+
     <mat-form-field appearance="outline">
       <mat-label>Resultado (Opcional)</mat-label>
       <input matInput type="number" formControlName="resultado" />

@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { Atividade } from '../../meus-estudos/meus-estudos.component';
 
 @Component({
   selector: 'app-atividade-dialog',
@@ -36,20 +37,31 @@ export class AtividadeDialogComponent {
   form: FormGroup;
   statusOptions: string[] = ['Pendente', 'Em Andamento', 'Concluído'];
   disciplinas: string[];
+  isEditMode: boolean;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AtividadeDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { disciplinas: string[] }
+    // O 'data' agora pode conter uma atividade para edição
+    @Inject(MAT_DIALOG_DATA)
+    public data: { atividade?: Atividade; disciplinas: string[] }
   ) {
     this.disciplinas = data.disciplinas;
+    this.isEditMode = !!data.atividade; // Verifica se estamos em modo de edição
+
     this.form = this.fb.group({
       disciplina: ['', Validators.required],
       atividade: ['', Validators.required],
       data: ['', Validators.required],
       status: ['Pendente', Validators.required],
+      peso: [null, [Validators.min(0)]],
       resultado: [null],
     });
+
+    // Se for modo de edição, preenche o formulário com os dados recebidos
+    if (this.isEditMode) {
+      this.form.patchValue(data.atividade!);
+    }
   }
 
   onSave(): void {

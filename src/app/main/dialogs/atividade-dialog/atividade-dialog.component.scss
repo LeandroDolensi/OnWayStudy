@@ -92,3 +92,22 @@ div[mat-dialog-actions] {
 ::ng-deep .mat-mdc-dialog-content > :first-child {
   margin-top: 5px !important;
 }
+
+// Adicionar ao final de meus-estudos.component.scss
+
+// Estilo para o badge de status clicável
+.status-badge {
+  cursor: pointer;
+  user-select: none; // Impede que o texto seja selecionado ao clicar
+  transition: transform 0.1s ease-out;
+
+  &:hover {
+    transform: scale(1.05); // Efeito de zoom suave
+  }
+}
+
+// Estilo para a coluna de ações
+.mat-column-acoes {
+  width: 80px;
+  text-align: center;
+}
