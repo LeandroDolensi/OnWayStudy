@@ -147,3 +147,8 @@ table {
     gap: 1rem;
   }
 }
+
+// Adicionar ao final de meus-estudos.component.scss
+::ng-deep .blurred-backdrop {
+  backdrop-filter: blur(4px);
+}

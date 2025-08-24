@@ -8,8 +8,12 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog'; // Importar MatDialog
 
-// Interface para tipar os dados da nossa tabela
+// Importar os componentes dos modais
+import { DisciplinaDialogComponent } from '../dialogs/disciplina-dialog/disciplina-dialog.component';
+import { AtividadeDialogComponent } from '../dialogs/atividade-dialog/atividade-dialog.component';
+
 export interface Atividade {
   disciplina: string;
   atividade: string;
@@ -18,7 +22,6 @@ export interface Atividade {
   resultado: number | null;
 }
 
-// Dados de exemplo (MOCK) para preencher a tabela
 const ELEMENT_DATA: Atividade[] = [
   {
     disciplina: 'Cálculo II',
@@ -115,7 +118,6 @@ const ELEMENT_DATA: Atividade[] = [
   styleUrl: './meus-estudos.component.scss',
 })
 export class MeusEstudosComponent implements AfterViewInit {
-  // Colunas que serão exibidas na tabela
   displayedColumns: string[] = [
     'disciplina',
     'atividade',
@@ -123,34 +125,66 @@ export class MeusEstudosComponent implements AfterViewInit {
     'status',
     'resultado',
   ];
-
-  // Fonte de dados da tabela, que permite ordenação e paginação
   dataSource: MatTableDataSource<Atividade>;
 
-  // Referências aos componentes de paginação e ordenação no template
+  // Lista de disciplinas para passar para o modal de atividade
+  disciplinasCadastradas: string[] = [
+    'Cálculo II',
+    'Física Quântica',
+    'Algoritmos Avançados',
+    'Engenharia de Software',
+    'Banco de Dados',
+  ];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor() {
-    // Inicializa a fonte de dados com os dados de exemplo
+  // Injetar o MatDialog no construtor
+  constructor(public dialog: MatDialog) {
     this.dataSource = new MatTableDataSource(ELEMENT_DATA);
   }
 
-  // Este método é chamado depois que a view do componente é inicializada
   ngAfterViewInit() {
-    // Conecta o paginador e o ordenador à fonte de dados
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  // Funções placeholder para os botões (ainda não funcionais)
   cadastrarDisciplina() {
-    console.log('Botão "Cadastrar Disciplina" clicado.');
-    // A lógica para abrir um modal ou navegar para outra página virá aqui
+    const dialogRef = this.dialog.open(DisciplinaDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop', // Classe para o fundo embaçado
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.nome) {
+        console.log('Nova disciplina:', result.nome);
+        // Adiciona a nova disciplina à lista
+        this.disciplinasCadastradas.push(result.nome);
+        // Futuramente, aqui você chamaria o serviço para salvar no backend
+      }
+    });
   }
 
   cadastrarAtividade() {
-    console.log('Botão "Cadastrar Atividade" clicado.');
-    // A lógica para abrir um modal ou navegar para outra página virá aqui
+    const dialogRef = this.dialog.open(AtividadeDialogComponent, {
+      width: '600px',
+      backdropClass: 'blurred-backdrop',
+      data: { disciplinas: this.disciplinasCadastradas }, // Passa a lista de disciplinas para o modal
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Nova atividade:', result);
+        // Adiciona a nova atividade à tabela
+        const novaAtividade: Atividade = {
+          ...result,
+          data: new Date(result.data),
+        };
+
+        const data = this.dataSource.data;
+        data.push(novaAtividade);
+        this.dataSource.data = data; // Atualiza a tabela
+      }
+    });
   }
 }

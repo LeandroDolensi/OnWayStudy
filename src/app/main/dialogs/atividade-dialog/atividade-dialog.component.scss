@@ -1,0 +1,12 @@
+.atividade-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+// Em telas pequenas, volta para uma coluna
+@media (max-width: 600px) {
+  .atividade-form {
+    grid-template-columns: 1fr;
+  }
+}
