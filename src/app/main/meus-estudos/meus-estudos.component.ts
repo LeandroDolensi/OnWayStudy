@@ -9,7 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
-
+import {
+  FiltrosTabelaComponent,
+  Filtros,
+} from '../filtros-tabela/filtros-tabela.component'; // Importar o novo componente
 import { DisciplinaDialogComponent } from '../dialogs/disciplina-dialog/disciplina-dialog.component';
 import { AtividadeDialogComponent } from '../dialogs/atividade-dialog/atividade-dialog.component';
 
@@ -64,6 +67,7 @@ const ELEMENT_DATA: Atividade[] = [
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    FiltrosTabelaComponent,
   ],
   templateUrl: './meus-estudos.component.html',
   styleUrl: './meus-estudos.component.scss',
@@ -78,6 +82,11 @@ export class MeusEstudosComponent implements AfterViewInit {
     'peso',
     'resultado',
     'acoes',
+  ];
+  statusOptions: Atividade['status'][] = [
+    'Pendente',
+    'Em Andamento',
+    'Concluído',
   ];
   dataSource: MatTableDataSource<Atividade>;
 
@@ -101,9 +110,32 @@ export class MeusEstudosComponent implements AfterViewInit {
     this.dataSource = new MatTableDataSource(ELEMENT_DATA);
   }
 
+  ngOnInit(): void {
+    // Lógica de filtragem personalizada
+    this.dataSource.filterPredicate = (
+      data: Atividade,
+      filter: string
+    ): boolean => {
+      const filtros = JSON.parse(filter) as Filtros;
+      const matchDisciplina =
+        !filtros.disciplina || data.disciplina === filtros.disciplina;
+      const matchStatus = !filtros.status || data.status === filtros.status;
+      return matchDisciplina && matchStatus;
+    };
+  }
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  onFilterChange(filtros: Filtros): void {
+    // Converte o objeto de filtros para uma string JSON para passar ao dataSource
+    this.dataSource.filter = JSON.stringify(filtros);
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage(); // Volta para a primeira página ao filtrar
+    }
   }
 
   // --- NOVAS FUNÇÕES DE EDIÇÃO ---

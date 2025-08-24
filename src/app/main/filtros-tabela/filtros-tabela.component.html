@@ -1,0 +1,27 @@
+<form [formGroup]="filterForm" class="filter-container">
+  <!-- Filtro por Disciplina -->
+  <mat-form-field appearance="outline">
+    <mat-label>Filtrar por Disciplina</mat-label>
+    <mat-select formControlName="disciplina">
+      <mat-option value="">Todas</mat-option>
+      <mat-option *ngFor="let disciplina of disciplinas" [value]="disciplina">
+        {{ disciplina }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Filtro por Status -->
+  <mat-form-field appearance="outline">
+    <mat-label>Filtrar por Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option value="">Todos</mat-option>
+      <mat-option *ngFor="let status of statusOptions" [value]="status">
+        {{ status }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-icon-button (click)="limparFiltros()" matTooltip="Limpar Filtros">
+    <mat-icon>clear</mat-icon>
+  </button>
+</form>
