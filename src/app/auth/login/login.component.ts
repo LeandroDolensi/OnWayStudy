@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
       this.authService.login({ nickname, password }).subscribe({
         next: (response: any) => {
           console.log('Login bem-sucedido!', response);
-          this.router.navigate(['/dashboard']); // Redirecionar para o dashboard
+          this.router.navigate(['/meus-estudos']); // Redirecionar para o dashboard
         },
         error: (error: any) => {
           console.error('Erro ao fazer login:', error);

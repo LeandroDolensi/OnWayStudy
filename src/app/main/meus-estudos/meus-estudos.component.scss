@@ -10,6 +10,7 @@ $dark-bg: #1e1e2f; // Um fundo escuro para o conteúdo
 $light-bg: #282a36; // Fundo para elementos como a tabela
 $text-primary: #f8f8f2;
 $text-secondary: #bd93f9;
+$hover-bg: #3a3c4e;
 
 :host {
   font-family: "Inter", sans-serif;
@@ -100,6 +101,14 @@ table {
   background-color: transparent;
 }
 
+.mat-mdc-row {
+  transition: background-color 0.3s ease-out; // Transição suave
+
+  &:hover {
+    background-color: $hover-bg; // Cor de fundo ao passar o rato
+  }
+}
+
 .mat-mdc-header-cell {
   background-color: rgba($dark-bg, 0.5);
   color: $text-secondary;
@@ -151,4 +160,30 @@ table {
 // Adicionar ao final de meus-estudos.component.scss
 ::ng-deep .blurred-backdrop {
   backdrop-filter: blur(4px);
+}
+
+::ng-deep {
+  .mat-mdc-paginator {
+    // Cor do texto "Items per page" e da faixa de páginas "1-10 of 100"
+    .mat-mdc-paginator-range-label,
+    .mat-mdc-paginator-page-size-label {
+      color: rgba($text-primary, 0.7);
+    }
+
+    // Cor do valor selecionado no dropdown e da seta
+    .mat-mdc-select-value,
+    .mat-mdc-select-arrow {
+      color: $text-primary;
+    }
+
+    // Cor dos ícones de navegação (setas)
+    .mat-mdc-icon-button .mat-icon {
+      color: $text-primary;
+    }
+
+    // Cor dos ícones de navegação desabilitados
+    .mat-mdc-icon-button:disabled .mat-icon {
+      color: rgba($text-primary, 0.3);
+    }
+  }
 }

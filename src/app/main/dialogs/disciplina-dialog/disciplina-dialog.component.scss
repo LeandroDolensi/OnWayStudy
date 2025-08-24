@@ -1,0 +1,84 @@
+// --- Variáveis de Cores (para consistência com o tema) ---
+$hot-pink: #e91e63;
+$light-bg: #282a36;
+$dark-bg: #1e1e2f;
+$text-primary: #1abc9c;
+$text-secondary: #bd93f9;
+$border-color: rgba(255, 255, 255, 0.2);
+
+// --- Estilo Geral do Modal ---
+// Usamos ::ng-deep para garantir que os estilos sejam aplicados
+// aos componentes do Angular Material.
+:host ::ng-deep .mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    background-color: $light-bg;
+    border-radius: 12px;
+  }
+}
+
+// Título do Modal
+h1[mat-dialog-title] {
+  color: $text-primary;
+  font-weight: 700;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 1rem;
+}
+
+// Conteúdo do Modal
+div[mat-dialog-content] {
+  padding-top: 1.5rem;
+  color: $text-primary;
+}
+
+// --- A CORREÇÃO PARA O LABEL CORTADO ---
+mat-form-field {
+  width: 100%;
+
+  // Altera a cor do label flutuante
+  .mdc-floating-label {
+    color: $text-secondary;
+  }
+
+  // Altera a cor do texto do input
+  .mat-mdc-input-element {
+    color: $text-primary;
+  }
+
+  // Altera a cor da borda
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: $border-color !important;
+  }
+
+  // Altera a cor da borda em foco
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $hot-pink !important;
+      border-width: 2px;
+    }
+    .mdc-floating-label {
+      color: $hot-pink;
+    }
+  }
+}
+
+// Ações (botões)
+div[mat-dialog-actions] {
+  padding-top: 1rem;
+
+  button[mat-button] {
+    color: $text-secondary;
+  }
+
+  button[mat-flat-button] {
+    background-color: $hot-pink;
+    color: white;
+  }
+}
+
+::ng-deep .mat-mdc-dialog-content > :first-child {
+  margin-top: 6px !important;
+}
