@@ -1,0 +1,82 @@
+// --- Variáveis de Cores (para consistência com o tema) ---
+$hot-pink: #e91e63;
+$light-bg: #282a36;
+$dark-bg: #1e1e2f;
+$text-primary: #1abc9c;
+$text-secondary: #bd93f9;
+$border-color: rgba(255, 255, 255, 0.2);
+$white: #f8f8f2;
+
+// --- Estilo Geral do Modal ---
+:host ::ng-deep .mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    background-color: $light-bg;
+    border-radius: 12px;
+  }
+}
+
+h1[mat-dialog-title] {
+  color: $text-primary;
+  font-weight: 700;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 1rem;
+}
+
+div[mat-dialog-content] {
+  padding-top: 1.5rem;
+  color: $text-primary;
+}
+
+// Novo estilo para o formulário
+.disciplina-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+
+  .mdc-floating-label {
+    color: $text-secondary;
+  }
+
+  .mat-mdc-input-element {
+    color: $text-primary;
+  }
+
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: $border-color !important;
+  }
+
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $hot-pink !important;
+      border-width: 2px;
+    }
+    .mdc-floating-label {
+      color: $hot-pink;
+    }
+  }
+}
+
+div[mat-dialog-actions] {
+  padding-top: 1rem;
+
+  button[mat-button] {
+    color: $text-secondary;
+  }
+
+  button[mat-flat-button] {
+    background-color: $hot-pink;
+    color: $white;
+  }
+}
+
+::ng-deep .mat-mdc-dialog-content > :first-child {
+  margin-top: 6px !important;
+}

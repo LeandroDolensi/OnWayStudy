@@ -1,0 +1,113 @@
+// --- Variáveis de Cores (para consistência com o tema) ---
+$hot-pink: #e91e63;
+$light-bg: #282a36;
+$dark-bg: #1e1e2f;
+$text-primary: #e91e63;
+$text-secondary: #bd93f9;
+$border-color: rgba(255, 255, 255, 0.2);
+
+// --- Estilo Geral do Modal ---
+:host ::ng-deep .mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    background-color: $light-bg;
+    border-radius: 12px;
+  }
+}
+
+// Título do Modal
+h1[mat-dialog-title] {
+  color: $text-primary;
+  font-weight: 700;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 1rem;
+}
+
+// Conteúdo do Modal
+div[mat-dialog-content] {
+  padding-top: 1.5rem;
+  color: $text-primary;
+}
+
+.atividade-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem; // Ajuste no espaçamento
+}
+
+// --- A CORREÇÃO PARA O LABEL CORTADO ---
+mat-form-field {
+  // Altera a cor do label flutuante
+  .mdc-floating-label {
+    color: $text-secondary;
+  }
+
+  // Altera a cor do texto do input e do ícone do calendário
+  .mat-mdc-input-element,
+  .mat-datepicker-toggle {
+    color: $text-primary;
+  }
+
+  // Altera a cor da borda
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing {
+    border-color: $border-color !important;
+  }
+
+  // Altera a cor da borda em foco
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $hot-pink !important;
+      border-width: 2px;
+    }
+    .mdc-floating-label {
+      color: $hot-pink;
+    }
+  }
+}
+
+// Ações (botões)
+div[mat-dialog-actions] {
+  padding-top: 1rem;
+
+  button[mat-button] {
+    color: $text-secondary;
+  }
+
+  button[mat-flat-button] {
+    background-color: $hot-pink;
+    color: white;
+  }
+}
+
+// Responsividade para o formulário
+@media (max-width: 600px) {
+  .atividade-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+::ng-deep .mat-mdc-dialog-content > :first-child {
+  margin-top: 5px !important;
+}
+
+// Adicionar ao final de meus-estudos.component.scss
+
+// Estilo para o badge de status clicável
+.status-badge {
+  cursor: pointer;
+  user-select: none; // Impede que o texto seja selecionado ao clicar
+  transition: transform 0.1s ease-out;
+
+  &:hover {
+    transform: scale(1.05); // Efeito de zoom suave
+  }
+}
+
+// Estilo para a coluna de ações
+.mat-column-acoes {
+  width: 80px;
+  text-align: center;
+}

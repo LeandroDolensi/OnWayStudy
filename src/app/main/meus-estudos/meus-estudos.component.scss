@@ -1,0 +1,209 @@
+// Importando a fonte e ícones
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+// --- Variáveis de Cores ---
+$neon-purple: #9b59b6;
+$turquoise-blue: #1abca1;
+$hot-pink: #e91e63;
+$white: #ffffff;
+$dark-bg: #1e1e2f; // Um fundo escuro para o conteúdo
+$light-bg: #282a36; // Fundo para elementos como a tabela
+$text-primary: #f8f8f2;
+$text-secondary: #bd93f9;
+$hover-bg: #3a3c4e;
+
+:host {
+  font-family: "Inter", sans-serif;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: $dark-bg;
+  color: $text-primary;
+}
+
+// --- Cabeçalho ---
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(
+    90deg,
+    rgba(26, 188, 156, 0.1),
+    rgba(155, 89, 182, 0.1)
+  );
+  border-bottom: 1px solid rgba($white, 0.1);
+  flex-shrink: 0;
+
+  .header-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .main-title {
+    background-image: linear-gradient(100deg, $neon-purple, $turquoise-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    font-size: x-large;
+    height: 23px;
+    width: auto;
+  }
+
+  .user-actions button {
+    color: $text-primary;
+  }
+}
+
+// --- Área de Conteúdo ---
+.content-area {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+
+    button {
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    button[color="primary"] {
+      background-color: $hot-pink;
+      transition: transform 0.2s ease-out;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    button[color="accent"] {
+      background-color: $turquoise-blue;
+      transition: transform 0.2s ease-out;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+// --- Container e Estilo da Tabela ---
+.table-container {
+  background-color: $light-bg;
+  border-radius: 12px;
+  overflow: hidden; // Garante que os cantos da tabela fiquem arredondados
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-table {
+  background-color: transparent;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.4s ease-out; // Transição suave
+
+  &:hover {
+    background-color: $hover-bg; // Cor de fundo ao passar o rato
+  }
+}
+
+.mat-mdc-header-cell {
+  background-color: rgba($dark-bg, 0.5);
+  color: $text-secondary;
+  font-weight: 500;
+}
+
+.mat-mdc-cell {
+  color: $text-primary;
+  border-bottom-color: rgba($white, 0.1);
+}
+
+.mat-mdc-paginator {
+  background-color: $light-bg;
+  color: $text-primary;
+}
+
+// --- Badge de Status ---
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $dark-bg;
+  cursor: pointer;
+
+  &.pendente {
+    background-color: #f1c40f;
+  }
+  &.em-andamento {
+    background-color: #3498db;
+  }
+  &.concluído {
+    background-color: $turquoise-blue;
+  }
+}
+
+// --- Responsividade ---
+@media (max-width: 768px) {
+  .content-area {
+    padding: 1rem;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+// Adicionar ao final de meus-estudos.component.scss
+::ng-deep .blurred-backdrop {
+  backdrop-filter: blur(4px);
+}
+
+::ng-deep {
+  .mat-mdc-paginator {
+    // Cor do texto "Items per page" e da faixa de páginas "1-10 of 100"
+    .mat-mdc-paginator-range-label,
+    .mat-mdc-paginator-page-size-label {
+      color: rgba($text-primary, 0.7);
+    }
+
+    // Cor do valor selecionado no dropdown e da seta
+    .mat-mdc-select-value,
+    .mat-mdc-select-arrow {
+      color: $text-primary;
+    }
+
+    // Cor dos ícones de navegação (setas)
+    .mat-mdc-icon-button .mat-icon {
+      color: $text-primary;
+    }
+
+    // Cor dos ícones de navegação desabilitados
+    .mat-mdc-icon-button:disabled .mat-icon {
+      color: rgba($text-primary, 0.3);
+    }
+  }
+}
