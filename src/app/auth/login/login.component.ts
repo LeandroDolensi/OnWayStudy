@@ -1,5 +1,3 @@
-// src/app/auth/login/login.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -9,7 +7,6 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
-// Imports do Angular Material para standalone components
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,10 +16,10 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true, // Indica que é um componente standalone
+  standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  // Importe os módulos necessários diretamente aqui
+
   imports: [
     ReactiveFormsModule,
     MatCardModule,
@@ -57,7 +54,6 @@ export class LoginComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Erro ao fazer login:', error);
-          // Adicionar mensagem de erro aqui
         },
       });
     }

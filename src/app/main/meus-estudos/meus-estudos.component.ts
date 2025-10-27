@@ -1,7 +1,5 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Imports do Angular Material
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -12,12 +10,12 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   FiltrosTabelaComponent,
   Filtros,
-} from '../filtros-tabela/filtros-tabela.component'; // Importar o novo componente
+} from '../filtros-tabela/filtros-tabela.component';
 import { DisciplinaDialogComponent } from '../dialogs/disciplina-dialog/disciplina-dialog.component';
 import { AtividadeDialogComponent } from '../dialogs/atividade-dialog/atividade-dialog.component';
 
 export interface Atividade {
-  id: number; // Adicionando um ID para facilitar a edição
+  id: number;
   disciplina: string;
   atividade: string;
   data: Date;
@@ -100,7 +98,6 @@ const ELEMENT_DATA: Atividade[] = [
   styleUrl: './meus-estudos.component.scss',
 })
 export class MeusEstudosComponent implements AfterViewInit {
-  // Adicionando a coluna 'acoes'
   displayedColumns: string[] = [
     'disciplina',
     'atividade',
@@ -137,7 +134,6 @@ export class MeusEstudosComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Lógica de filtragem personalizada
     this.dataSource.filterPredicate = (
       data: Atividade,
       filter: string
@@ -156,15 +152,12 @@ export class MeusEstudosComponent implements AfterViewInit {
   }
 
   onFilterChange(filtros: Filtros): void {
-    // Converte o objeto de filtros para uma string JSON para passar ao dataSource
     this.dataSource.filter = JSON.stringify(filtros);
 
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage(); // Volta para a primeira página ao filtrar
+      this.dataSource.paginator.firstPage();
     }
   }
-
-  // --- NOVAS FUNÇÕES DE EDIÇÃO ---
 
   trocarStatus(atividade: Atividade): void {
     const currentIndex = this.statusCycle.indexOf(atividade.status);
@@ -174,15 +167,13 @@ export class MeusEstudosComponent implements AfterViewInit {
     console.log(
       `Status de '${atividade.atividade}' alterado para '${atividade.status}'`
     );
-    // Futuramente, aqui você chamaria o serviço para salvar a alteração no backend
-    this.dataSource._updateChangeSubscription(); // Força a atualização da tabela
+    this.dataSource._updateChangeSubscription();
   }
 
   editarAtividade(atividade: Atividade): void {
     const dialogRef = this.dialog.open(AtividadeDialogComponent, {
       width: '600px',
       backdropClass: 'blurred-backdrop',
-      // Passamos os dados da atividade e a lista de disciplinas para o modal
       data: {
         atividade: atividade,
         disciplinas: this.disciplinasCadastradas,
@@ -192,7 +183,6 @@ export class MeusEstudosComponent implements AfterViewInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         console.log('Atividade atualizada:', result);
-        // Encontra a atividade no array e atualiza os seus dados
         const index = this.dataSource.data.findIndex(
           (a) => a.id === atividade.id
         );
@@ -232,7 +222,6 @@ export class MeusEstudosComponent implements AfterViewInit {
       if (result) {
         console.log('Nova atividade:', result);
 
-        // A lógica existente já suporta o novo campo 'peso'
         const novaAtividade: Atividade = {
           ...result,
           data: new Date(result.data),

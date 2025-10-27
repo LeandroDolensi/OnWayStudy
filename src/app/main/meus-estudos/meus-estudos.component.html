@@ -1,17 +1,14 @@
 <div class="main-container">
-  <!-- Cabeçalho da página principal -->
   <header class="main-header">
     <img src="assets/logo_icon.png" alt="Logo OnWayStudy" class="header-logo" />
     <div class="main-title">OnWayStudy</div>
     <div class="user-actions">
-      <!-- Futuramente, aqui teremos o nome do usuário e o botão de logout -->
       <button mat-icon-button matTooltip="Sair">
         <mat-icon>logout</mat-icon>
       </button>
     </div>
   </header>
 
-  <!-- Conteúdo principal da página -->
   <main class="content-area">
     <div class="table-header">
       <h1>Minhas Atividades</h1>
@@ -27,7 +24,6 @@
       </div>
     </div>
 
-    <!-- ADICIONAR O COMPONENTE DE FILTROS AQUI -->
     <app-filtros-tabela
       [disciplinas]="disciplinasCadastradas"
       [statusOptions]="statusOptions"
@@ -37,7 +33,6 @@
 
     <div class="table-container mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" matSort>
-        <!-- Colunas existentes (Disciplina, Atividade, Data) -->
         <ng-container matColumnDef="disciplina">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Disciplina</th>
           <td mat-cell *matCellDef="let row">{{ row.disciplina }}</td>
@@ -53,7 +48,6 @@
           </td>
         </ng-container>
 
-        <!-- Coluna Status (com evento de clique) -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
           <td mat-cell *matCellDef="let row">
@@ -68,7 +62,6 @@
           </td>
         </ng-container>
 
-        <!-- Colunas Peso e Resultado (sem alterações) -->
         <ng-container matColumnDef="peso">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Peso</th>
           <td mat-cell *matCellDef="let row">
@@ -82,7 +75,6 @@
           </td>
         </ng-container>
 
-        <!-- Nova Coluna Ações -->
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef>Ações</th>
           <td mat-cell *matCellDef="let row">

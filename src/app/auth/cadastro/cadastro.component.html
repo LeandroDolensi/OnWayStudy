@@ -11,7 +11,6 @@
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="cadastroForm" (ngSubmit)="onRegister()">
-        <!-- Campo Nickname -->
         <mat-form-field>
           <mat-label>Nickname</mat-label>
           <input matInput type="text" formControlName="nickname" />
@@ -20,7 +19,6 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Campo Senha -->
         <mat-form-field>
           <mat-label>Senha</mat-label>
           <input matInput type="password" formControlName="password" />
@@ -31,7 +29,6 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Campo Confirmar Senha -->
         <mat-form-field>
           <mat-label>Confirmar Senha</mat-label>
           <input matInput type="password" formControlName="confirmPassword" />

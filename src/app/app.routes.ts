@@ -1,12 +1,9 @@
-// src/app/app.routes.ts
-
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { CadastroComponent } from './auth/cadastro/cadastro.component';
 import { MeusEstudosComponent } from './main/meus-estudos/meus-estudos.component';
 
 export const routes: Routes = [
-  // A rota de login
   {
     path: 'login',
     component: LoginComponent,

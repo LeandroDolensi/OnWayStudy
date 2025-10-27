@@ -9,8 +9,6 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-// Imports do Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,13 +17,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../services/auth.service';
 
-// Validador customizado para verificar se as senhas coincidem
 export function passwordMatchValidator(
   control: AbstractControl
 ): ValidationErrors | null {
   const password = control.get('password')?.value;
   const confirmPassword = control.get('confirmPassword')?.value;
-  // Se as senhas não forem iguais, retorna um erro
+
   return password === confirmPassword ? null : { passwordMismatch: true };
 }
 
@@ -59,25 +56,22 @@ export class CadastroComponent implements OnInit {
         confirmPassword: ['', Validators.required],
       },
       { validators: passwordMatchValidator }
-    ); // Aplica o validador no grupo
+    );
   }
 
   ngOnInit(): void {}
 
   onRegister(): void {
     if (this.cadastroForm.valid) {
-      // Remove o campo de confirmação antes de enviar para o backend
       const { nickname, password } = this.cadastroForm.value;
 
       this.authService.register({ nickname, password }).subscribe({
         next: (response) => {
           console.log('Cadastro realizado com sucesso!', response);
-          // Opcional: Redirecionar para o login ou para o dashboard
           this.router.navigate(['/login']);
         },
         error: (error) => {
           console.error('Erro ao realizar o cadastro:', error);
-          // Adicionar feedback de erro para o usuário aqui
         },
       });
     }
