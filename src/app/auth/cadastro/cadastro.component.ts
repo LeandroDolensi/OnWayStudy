@@ -14,8 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-
-import { AuthService } from '../services/auth.service';
+import { UserService } from '../../services/user/user.service';
 
 export function passwordMatchValidator(
   control: AbstractControl
@@ -43,11 +42,13 @@ export function passwordMatchValidator(
 })
 export class CadastroComponent implements OnInit {
   cadastroForm: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private userService: UserService
   ) {
     this.cadastroForm = this.fb.group(
       {
@@ -62,19 +63,45 @@ export class CadastroComponent implements OnInit {
   ngOnInit(): void {}
 
   onRegister(): void {
-    if (this.cadastroForm.valid) {
-      const { nickname, password } = this.cadastroForm.value;
-
-      this.authService.register({ nickname, password }).subscribe({
-        next: (response) => {
-          console.log('Cadastro realizado com sucesso!', response);
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          console.error('Erro ao realizar o cadastro:', error);
-        },
-      });
+    if (!this.cadastroForm.valid) {
+      return;
     }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const { nickname, password } = this.cadastroForm.value;
+
+    this.userService.create({ nickname, password }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        console.log('Cadastro realizado com sucesso!', response);
+
+        localStorage.setItem('user_nickname', nickname);
+        localStorage.setItem('user_password', password);
+
+        this.router.navigate(['/meus-estudos']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Erro ao realizar o cadastro:', error);
+
+        if (error.status === 400 && error.error) {
+          if (error.error.nickname) {
+            let msg = error.error.nickname;
+            if (error.error.suggestions) {
+              msg += ` Suggestions: ${error.error.suggestions.join(', ')}`;
+            }
+            this.errorMessage = msg;
+          } else {
+            this.errorMessage = 'Please check the fields and try again.';
+          }
+        } else {
+          this.errorMessage =
+            'An unexpected error occurred. Please try again later.';
+        }
+      },
+    });
   }
 
   onGoBack(): void {
