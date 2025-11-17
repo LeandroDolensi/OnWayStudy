@@ -62,6 +62,13 @@ $border-color: rgba(255, 255, 255, 0.2);
   z-index: 10; // Garante que o logo fique acima de outros elementos
 }
 
+.error-message {
+  color: #cfb5bd; // Angular Material 'warn' color
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
 // --- Estilo do Card de Login ---
 mat-card {
   max-width: 400px;

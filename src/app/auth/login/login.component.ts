@@ -6,13 +6,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-
-import { AuthService } from '../services/auth.service';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +20,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./login.component.scss'],
 
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -30,11 +30,13 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService // Injeção de dependência do serviço
+    private userService: UserService
   ) {
     this.loginForm = this.fb.group({
       nickname: ['', Validators.required],
@@ -42,21 +44,37 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    localStorage.removeItem('user_nickname');
+    localStorage.removeItem('user_password');
+  }
 
   onLogin(): void {
-    if (this.loginForm.valid) {
-      const { nickname, password } = this.loginForm.value;
-      this.authService.login({ nickname, password }).subscribe({
-        next: (response: any) => {
-          console.log('Login bem-sucedido!', response);
-          this.router.navigate(['/meus-estudos']); // Redirecionar para o dashboard
-        },
-        error: (error: any) => {
-          console.error('Erro ao fazer login:', error);
-        },
-      });
+    if (!this.loginForm.valid) {
+      return;
     }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const { nickname, password } = this.loginForm.value;
+    localStorage.setItem('user_nickname', nickname);
+    localStorage.setItem('user_password', password);
+
+    this.userService.getList().subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        console.log('Login successful!', response);
+        this.router.navigate(['/meus-estudos']);
+      },
+      error: (error: any) => {
+        this.isLoading = false;
+        console.error('Login failed:', error);
+        localStorage.removeItem('user_nickname');
+        localStorage.removeItem('user_password');
+        this.errorMessage = 'Nickname or password incorrect. Please try again.';
+      },
+    });
   }
 
   onCreateAccount(): void {
