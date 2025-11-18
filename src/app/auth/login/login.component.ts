@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -18,7 +19,6 @@ import { UserService } from '../../services/user/user.service';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -33,11 +33,12 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private userService: UserService
-  ) {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private platformId = inject(PLATFORM_ID);
+
+  constructor() {
     this.loginForm = this.fb.group({
       nickname: ['', Validators.required],
       password: ['', Validators.required],
@@ -45,8 +46,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.removeItem('user_nickname');
-    localStorage.removeItem('user_password');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('user_nickname');
+      localStorage.removeItem('user_password');
+    }
   }
 
   onLogin(): void {
@@ -56,8 +59,8 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this.errorMessage = null;
-
     const { nickname, password } = this.loginForm.value;
+
     localStorage.setItem('user_nickname', nickname);
     localStorage.setItem('user_password', password);
 
@@ -70,8 +73,10 @@ export class LoginComponent implements OnInit {
       error: (error: any) => {
         this.isLoading = false;
         console.error('Login failed:', error);
+
         localStorage.removeItem('user_nickname');
         localStorage.removeItem('user_password');
+
         this.errorMessage = 'Nickname or password incorrect. Please try again.';
       },
     });
