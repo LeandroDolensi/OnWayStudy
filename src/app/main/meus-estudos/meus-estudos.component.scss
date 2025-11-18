@@ -239,27 +239,55 @@ table {
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background-color: rgba($light-bg, 0.5); // Slightly lighter than background
+  background-color: rgba($light-bg, 0.4);
   border-radius: 12px;
   border: 1px solid rgba($white, 0.05);
 
   .context-item {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column; // Stack Header above Input
     flex: 1;
-    min-width: 350px; // Increased width to fit buttons
+    min-width: 300px;
+    gap: 0.5rem;
 
-    mat-form-field {
-      flex-grow: 1; // Input takes available space
-      font-size: 0.9rem;
-    }
-
-    .action-buttons {
+    .item-header {
       display: flex;
-      gap: 0; // Buttons close together
-      flex-shrink: 0; // Don't shrink buttons
+      justify-content: space-between; // Label Left, Buttons Right
+      align-items: center;
+      padding-left: 4px;
+
+      .item-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: $text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 0;
+        // Optional: Scale buttons down slightly to look less bulky in the header
+        transform: scale(0.9);
+        transform-origin: right center;
+      }
     }
+
+    .full-width-field {
+      width: 100%;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+::ng-deep .full-width-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: $dark-bg;
+    border-radius: 8px;
+  }
+  // Remove default bottom spacing for errors if not needed here
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
   }
 }
 

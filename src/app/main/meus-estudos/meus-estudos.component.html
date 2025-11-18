@@ -22,11 +22,43 @@
   <main class="content-area">
     <div class="context-bar">
       <div class="context-item">
-        <mat-form-field appearance="outline" class="dense-form-field">
-          <mat-label>Instituição</mat-label>
+        <div class="item-header">
+          <span class="item-label">Instituição</span>
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Nova Instituição"
+              (click)="openInstitutionDialog()"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Editar Instituição"
+              [disabled]="!selectedInstitution"
+              (click)="editInstitution()"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Excluir Instituição"
+              [disabled]="!selectedInstitution"
+              (click)="deleteInstitution()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width-field">
           <mat-select
             [(ngModel)]="selectedInstitution"
             (selectionChange)="onInstitutionChange()"
+            placeholder="Selecione uma Instituição"
           >
             <mat-option *ngFor="let inst of institutions" [value]="inst">
               {{ inst.name }}
@@ -40,44 +72,48 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-
-        <div class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            matTooltip="Nova Instituição"
-            (click)="openInstitutionDialog()"
-          >
-            <mat-icon>add_circle</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="accent"
-            matTooltip="Editar Instituição"
-            [disabled]="!selectedInstitution"
-            (click)="editInstitution()"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="warn"
-            matTooltip="Excluir Instituição"
-            [disabled]="!selectedInstitution"
-            (click)="deleteInstitution()"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
       </div>
 
       <div class="context-item">
-        <mat-form-field appearance="outline" class="dense-form-field">
-          <mat-label>Curso</mat-label>
+        <div class="item-header">
+          <span class="item-label">Curso</span>
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Novo Curso"
+              (click)="openCourseDialog()"
+              [disabled]="!selectedInstitution"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Editar Curso"
+              [disabled]="!selectedCourse"
+              (click)="editCourse()"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Excluir Curso"
+              [disabled]="!selectedCourse"
+              (click)="deleteCourse()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width-field">
           <mat-select
             [(ngModel)]="selectedCourse"
             (selectionChange)="onCourseChange()"
             [disabled]="!selectedInstitution"
+            placeholder="Selecione um Curso"
           >
             <mat-option *ngFor="let course of filteredCourses" [value]="course">
               {{ course.name }}
@@ -91,36 +127,6 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-
-        <div class="action-buttons">
-          <button
-            mat-icon-button
-            color="primary"
-            matTooltip="Novo Curso"
-            (click)="openCourseDialog()"
-            [disabled]="!selectedInstitution"
-          >
-            <mat-icon>add_circle</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="accent"
-            matTooltip="Editar Curso"
-            [disabled]="!selectedCourse"
-            (click)="editCourse()"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="warn"
-            matTooltip="Excluir Curso"
-            [disabled]="!selectedCourse"
-            (click)="deleteCourse()"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
       </div>
     </div>
     <div class="table-header">
