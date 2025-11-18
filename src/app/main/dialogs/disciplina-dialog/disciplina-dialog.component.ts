@@ -46,7 +46,11 @@ export class DisciplinaDialogComponent implements OnInit {
   ngOnInit(): void {
     if (this.data) {
       this.isEditing = true;
-      this.form.patchValue(this.data);
+      this.form.patchValue({
+        name: this.data.name,
+        semester: this.data.semester,
+        extra_information: this.data.extra_information,
+      });
     }
   }
 

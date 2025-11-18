@@ -38,6 +38,7 @@ export interface Atividade {
   data: Date;
   status: 'Pendente' | 'Em Andamento' | 'Concluído';
   peso: number | null;
+  nota_esperada: number | null;
   resultado: number | null;
 }
 
@@ -78,6 +79,7 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
 
   disciplines: Discipline[] = [];
   disciplinaNames: string[] = [];
+  selectedDiscipline: Discipline | null = null;
 
   displayedColumns: string[] = [
     'disciplina',
@@ -85,6 +87,7 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
     'data',
     'status',
     'peso',
+    'nota_esperada',
     'resultado',
     'acoes',
   ];
@@ -178,15 +181,27 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
   }
 
   loadDisciplines() {
-    if (!this.selectedCourse) return;
+    if (!this.selectedCourse) {
+      this.disciplines = [];
+      this.selectedDiscipline = null; // Reset
+      this.dataSource.data = [];
+      return;
+    }
     this.disciplineService.getList().subscribe((data) => {
       this.disciplines = data.filter(
         (d: any) => d.course === this.selectedCourse?.id
       );
-      this.disciplinaNames = this.disciplines.map((d) => d.name);
+
+      if (this.disciplines.length > 0) {
+        this.selectedDiscipline = this.disciplines[this.disciplines.length - 1];
+      } else {
+        this.selectedDiscipline = null;
+      }
       this.loadActivities();
     });
   }
+
+  onDisciplineChange() {}
 
   loadActivities() {
     this.activityService.getList().subscribe((backendActivities) => {
@@ -207,6 +222,7 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
           data: new Date(a.delivery_date),
           status: this.statusMapRev[a.status] || 'Pendente',
           peso: a.grade_weight ? parseFloat(a.grade_weight) : null,
+          nota_esperada: a.expected_grade ? parseFloat(a.expected_grade) : null, // [NEW]
           resultado: a.grade_result ? parseFloat(a.grade_result) : null,
         };
       });
@@ -239,9 +255,60 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
           .subscribe((newDisc) => {
             this.disciplines.push(newDisc);
             this.disciplinaNames = this.disciplines.map((d) => d.name);
+            this.selectedDiscipline = newDisc;
           });
       }
     });
+  }
+
+  editarDisciplina() {
+    if (!this.selectedDiscipline) return;
+
+    const ref = this.dialog.open(DisciplinaDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop',
+      data: this.selectedDiscipline, // Pass data
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result && this.selectedDiscipline) {
+        this.disciplineService
+          .patch(this.selectedDiscipline.id, result)
+          .subscribe((updated) => {
+            const index = this.disciplines.findIndex(
+              (d) => d.id === updated.id
+            );
+            if (index !== -1) {
+              this.disciplines[index] = updated;
+              this.selectedDiscipline = updated;
+              this.loadActivities();
+            }
+          });
+      }
+    });
+  }
+
+  deletarDisciplina() {
+    if (!this.selectedDiscipline) return;
+
+    if (
+      confirm(
+        `Tem certeza que deseja excluir a disciplina '${this.selectedDiscipline.name}'?`
+      )
+    ) {
+      this.disciplineService
+        .delete(this.selectedDiscipline.id)
+        .subscribe(() => {
+          this.disciplines = this.disciplines.filter(
+            (d) => d.id !== this.selectedDiscipline!.id
+          );
+          this.selectedDiscipline =
+            this.disciplines.length > 0
+              ? this.disciplines[this.disciplines.length - 1]
+              : null;
+          this.loadActivities();
+        });
+    }
   }
 
   cadastrarAtividade() {
@@ -282,6 +349,16 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  deletarAtividade(row: Atividade) {
+    if (
+      confirm(`Tem certeza que deseja excluir a atividade '${row.atividade}'?`)
+    ) {
+      this.activityService.delete(row.id).subscribe(() => {
+        this.loadActivities();
+      });
+    }
   }
 
   trocarStatus(row: Atividade) {
