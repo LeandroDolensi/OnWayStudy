@@ -16,6 +16,28 @@ $hover-bg: #3a3c4e;
   font-family: "Inter", sans-serif;
 }
 
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .welcome-text {
+    font-size: 2rem;
+    color: rgba($white, 0.8);
+
+    strong {
+      color: $turquoise-blue;
+    }
+  }
+
+  button {
+    color: $text-primary;
+    &:hover {
+      color: $hot-pink;
+    }
+  }
+}
+
 .main-container {
   display: flex;
   flex-direction: column;

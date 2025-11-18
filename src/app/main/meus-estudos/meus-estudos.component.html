@@ -1,9 +1,19 @@
 <div class="main-container">
   <header class="main-header">
-    <img src="assets/logo_icon.png" alt="Logo OnWayStudy" class="header-logo" />
-    <div class="main-title">OnWayStudy</div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <img
+        src="assets/logo_icon.png"
+        alt="Logo OnWayStudy"
+        class="header-logo"
+      />
+      <div class="main-title">OnWayStudy</div>
+    </div>
+
     <div class="user-actions">
-      <button mat-icon-button matTooltip="Sair">
+      <span class="welcome-text"
+        >Olá, <strong>{{ userName }}</strong></span
+      >
+      <button mat-icon-button matTooltip="Sair" (click)="logout()">
         <mat-icon>logout</mat-icon>
       </button>
     </div>

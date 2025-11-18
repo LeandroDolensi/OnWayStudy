@@ -1,5 +1,12 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  ViewChild,
+  OnInit,
+  inject,
+} from '@angular/core'; // Added inject
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // Added Router
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -34,51 +41,6 @@ const ELEMENT_DATA: Atividade[] = [
     peso: 4,
     resultado: null,
   },
-  {
-    id: 2,
-    disciplina: 'Empreendedorismo',
-    atividade: 'Trabalho em Grupo',
-    data: new Date('2025-08-26'),
-    status: 'Pendente',
-    peso: 3,
-    resultado: null,
-  },
-  {
-    id: 3,
-    disciplina: 'Programção Web IV',
-    atividade: 'Entrega do Projeto 1',
-    data: new Date('2025-08-27'),
-    status: 'Em Andamento',
-    peso: 3,
-    resultado: null,
-  },
-  {
-    id: 4,
-    disciplina: 'Programção para Dispositivos Móveis',
-    atividade: 'Prova 1',
-    data: new Date('2025-09-12'),
-    status: 'Em Andamento',
-    peso: 3,
-    resultado: null,
-  },
-  {
-    id: 5,
-    disciplina: 'Projeto de Sistemas',
-    atividade: 'Entrega das Telas',
-    data: new Date('2025-09-02'),
-    status: 'Em Andamento',
-    peso: 3,
-    resultado: null,
-  },
-  {
-    id: 6,
-    disciplina: 'Empreendedorismo',
-    atividade: 'Entrega do Projeto 2',
-    data: new Date('2025-09-23'),
-    status: 'Em Andamento',
-    peso: 3,
-    resultado: null,
-  },
 ];
 
 @Component({
@@ -97,7 +59,12 @@ const ELEMENT_DATA: Atividade[] = [
   templateUrl: './meus-estudos.component.html',
   styleUrl: './meus-estudos.component.scss',
 })
-export class MeusEstudosComponent implements AfterViewInit {
+export class MeusEstudosComponent implements OnInit, AfterViewInit {
+  private router = inject(Router);
+  public dialog = inject(MatDialog);
+
+  userName: string = '';
+
   displayedColumns: string[] = [
     'disciplina',
     'atividade',
@@ -129,11 +96,13 @@ export class MeusEstudosComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(public dialog: MatDialog) {
+  constructor() {
     this.dataSource = new MatTableDataSource(ELEMENT_DATA);
   }
 
   ngOnInit(): void {
+    this.userName = localStorage.getItem('user_nickname') || 'Estudante';
+
     this.dataSource.filterPredicate = (
       data: Atividade,
       filter: string
@@ -151,9 +120,14 @@ export class MeusEstudosComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
+  logout(): void {
+    localStorage.removeItem('user_nickname');
+    localStorage.removeItem('user_password');
+    this.router.navigate(['/login']);
+  }
+
   onFilterChange(filtros: Filtros): void {
     this.dataSource.filter = JSON.stringify(filtros);
-
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -163,10 +137,6 @@ export class MeusEstudosComponent implements AfterViewInit {
     const currentIndex = this.statusCycle.indexOf(atividade.status);
     const nextIndex = (currentIndex + 1) % this.statusCycle.length;
     atividade.status = this.statusCycle[nextIndex];
-
-    console.log(
-      `Status de '${atividade.atividade}' alterado para '${atividade.status}'`
-    );
     this.dataSource._updateChangeSubscription();
   }
 
