@@ -20,14 +20,127 @@
   </header>
 
   <main class="content-area">
+    <div class="context-bar">
+      <div class="context-item">
+        <mat-form-field appearance="outline" class="dense-form-field">
+          <mat-label>Instituição</mat-label>
+          <mat-select
+            [(ngModel)]="selectedInstitution"
+            (selectionChange)="onInstitutionChange()"
+          >
+            <mat-option *ngFor="let inst of institutions" [value]="inst">
+              {{ inst.name }}
+            </mat-option>
+            <mat-option
+              [value]="null"
+              disabled
+              *ngIf="institutions.length === 0"
+            >
+              Nenhuma encontrada
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Nova Instituição"
+            (click)="openInstitutionDialog()"
+          >
+            <mat-icon>add_circle</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            matTooltip="Editar Instituição"
+            [disabled]="!selectedInstitution"
+            (click)="editInstitution()"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Excluir Instituição"
+            [disabled]="!selectedInstitution"
+            (click)="deleteInstitution()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="context-item">
+        <mat-form-field appearance="outline" class="dense-form-field">
+          <mat-label>Curso</mat-label>
+          <mat-select
+            [(ngModel)]="selectedCourse"
+            (selectionChange)="onCourseChange()"
+            [disabled]="!selectedInstitution"
+          >
+            <mat-option *ngFor="let course of filteredCourses" [value]="course">
+              {{ course.name }}
+            </mat-option>
+            <mat-option
+              [value]="null"
+              disabled
+              *ngIf="filteredCourses.length === 0"
+            >
+              Nenhum curso encontrado
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Novo Curso"
+            (click)="openCourseDialog()"
+            [disabled]="!selectedInstitution"
+          >
+            <mat-icon>add_circle</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            matTooltip="Editar Curso"
+            [disabled]="!selectedCourse"
+            (click)="editCourse()"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Excluir Curso"
+            [disabled]="!selectedCourse"
+            (click)="deleteCourse()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="table-header">
       <h1>Minhas Atividades</h1>
       <div class="header-buttons">
-        <button mat-flat-button color="accent" (click)="cadastrarDisciplina()">
+        <button
+          mat-flat-button
+          color="accent"
+          (click)="cadastrarDisciplina()"
+          [disabled]="!selectedCourse"
+        >
           <mat-icon>class</mat-icon>
           Cadastrar Disciplina
         </button>
-        <button mat-flat-button color="primary" (click)="cadastrarAtividade()">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="cadastrarAtividade()"
+          [disabled]="!selectedCourse"
+        >
           <mat-icon>add_task</mat-icon>
           Cadastrar Atividade
         </button>
@@ -102,7 +215,6 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-
       <mat-paginator
         [pageSizeOptions]="[5, 10, 25, 100]"
         [pageSize]="5"

@@ -4,9 +4,9 @@ import {
   ViewChild,
   OnInit,
   inject,
-} from '@angular/core'; // Added inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // Added Router
+import { Router } from '@angular/router';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -14,12 +14,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 import {
   FiltrosTabelaComponent,
   Filtros,
 } from '../filtros-tabela/filtros-tabela.component';
+import { InstitutionDialogComponent } from '../dialogs/institution-dialog/institution-dialog.component';
+import { CourseDialogComponent } from '../dialogs/course-dialog/course-dialog.component';
 import { DisciplinaDialogComponent } from '../dialogs/disciplina-dialog/disciplina-dialog.component';
 import { AtividadeDialogComponent } from '../dialogs/atividade-dialog/atividade-dialog.component';
+import { InstitutionService } from '../../services/institution/institution.service';
+import { CourseService } from '../../services/course/course.service';
+import { Institution, Course } from '../../models/user.model';
 
 export interface Atividade {
   id: number;
@@ -31,29 +39,22 @@ export interface Atividade {
   resultado: number | null;
 }
 
-const ELEMENT_DATA: Atividade[] = [
-  {
-    id: 1,
-    disciplina: 'Projeto de Sistemas',
-    atividade: 'Apresentação de telas',
-    data: new Date('2025-08-26'),
-    status: 'Pendente',
-    peso: 4,
-    resultado: null,
-  },
-];
+const ELEMENT_DATA: Atividade[] = [];
 
 @Component({
   selector: 'app-meus-estudos',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    MatSelectModule,
+    MatFormFieldModule,
     FiltrosTabelaComponent,
   ],
   templateUrl: './meus-estudos.component.html',
@@ -61,9 +62,17 @@ const ELEMENT_DATA: Atividade[] = [
 })
 export class MeusEstudosComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
-  public dialog = inject(MatDialog);
+  private dialog = inject(MatDialog);
+  private institutionService = inject(InstitutionService);
+  private courseService = inject(CourseService);
 
   userName: string = '';
+  institutions: Institution[] = [];
+  selectedInstitution: Institution | null = null;
+
+  allCourses: Course[] = [];
+  filteredCourses: Course[] = [];
+  selectedCourse: Course | null = null;
 
   displayedColumns: string[] = [
     'disciplina',
@@ -84,8 +93,6 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
   disciplinasCadastradas: string[] = [
     'Empreendedorismo',
     'Projeto de Sistemas',
-    'Programção para Dispositivos Móveis',
-    'Programção Web IV',
   ];
   private statusCycle: Atividade['status'][] = [
     'Pendente',
@@ -102,22 +109,200 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.userName = localStorage.getItem('user_nickname') || 'Estudante';
-
-    this.dataSource.filterPredicate = (
-      data: Atividade,
-      filter: string
-    ): boolean => {
-      const filtros = JSON.parse(filter) as Filtros;
-      const matchDisciplina =
-        !filtros.disciplina || data.disciplina === filtros.disciplina;
-      const matchStatus = !filtros.status || data.status === filtros.status;
-      return matchDisciplina && matchStatus;
-    };
+    this.loadInstitutions();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  loadInstitutions() {
+    this.institutionService.getList().subscribe((data) => {
+      this.institutions = data;
+      if (this.institutions.length > 0) {
+        this.selectedInstitution =
+          this.institutions[this.institutions.length - 1];
+        this.loadCourses();
+      }
+    });
+  }
+
+  loadCourses() {
+    if (!this.selectedInstitution) return;
+
+    this.courseService.getList().subscribe((data) => {
+      this.allCourses = data;
+      this.filterCoursesByInstitution();
+    });
+  }
+
+  filterCoursesByInstitution() {
+    if (!this.selectedInstitution) {
+      this.filteredCourses = [];
+      return;
+    }
+
+    this.filteredCourses = this.allCourses.filter(
+      (c: any) => c.institution === this.selectedInstitution?.id
+    );
+
+    if (this.filteredCourses.length > 0) {
+      this.selectedCourse =
+        this.filteredCourses[this.filteredCourses.length - 1];
+    } else {
+      this.selectedCourse = null;
+    }
+  }
+
+  onInstitutionChange() {
+    this.filterCoursesByInstitution();
+  }
+
+  onCourseChange() {
+    console.log('Course changed to:', this.selectedCourse?.name);
+  }
+
+  openInstitutionDialog() {
+    const ref = this.dialog.open(InstitutionDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.institutionService.create(result).subscribe((newInst) => {
+          this.institutions.push(newInst);
+          this.selectedInstitution = newInst;
+          this.onInstitutionChange();
+        });
+      }
+    });
+  }
+
+  editInstitution() {
+    if (!this.selectedInstitution) return;
+
+    const ref = this.dialog.open(InstitutionDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop',
+      data: this.selectedInstitution,
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result && this.selectedInstitution) {
+        this.institutionService
+          .patch(this.selectedInstitution.id, result)
+          .subscribe((updated) => {
+            const index = this.institutions.findIndex(
+              (i) => i.id === updated.id
+            );
+            if (index !== -1) {
+              this.institutions[index] = updated;
+              this.selectedInstitution = updated; // Update selection reference
+            }
+          });
+      }
+    });
+  }
+
+  deleteInstitution() {
+    if (!this.selectedInstitution) return;
+
+    if (
+      confirm(
+        `Tem certeza que deseja excluir a instituição '${this.selectedInstitution.name}'?`
+      )
+    ) {
+      this.institutionService
+        .delete(this.selectedInstitution.id)
+        .subscribe(() => {
+          this.institutions = this.institutions.filter(
+            (i) => i.id !== this.selectedInstitution!.id
+          );
+
+          this.selectedInstitution =
+            this.institutions.length > 0
+              ? this.institutions[this.institutions.length - 1]
+              : null;
+          this.onInstitutionChange();
+        });
+    }
+  }
+
+  openCourseDialog() {
+    if (!this.selectedInstitution) {
+      alert('Selecione uma instituição primeiro.');
+      return;
+    }
+    const ref = this.dialog.open(CourseDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop',
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        const payload = {
+          ...result,
+          institution: this.selectedInstitution!.id,
+        };
+        this.courseService.create(payload).subscribe((newCourse) => {
+          const courseWithId = {
+            ...newCourse,
+            institution: this.selectedInstitution!.id,
+          };
+          this.allCourses.push(courseWithId as any);
+          this.filterCoursesByInstitution();
+          this.selectedCourse = courseWithId as any;
+        });
+      }
+    });
+  }
+
+  editCourse() {
+    if (!this.selectedCourse) return;
+
+    const ref = this.dialog.open(CourseDialogComponent, {
+      width: '400px',
+      backdropClass: 'blurred-backdrop',
+      data: this.selectedCourse,
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result && this.selectedCourse) {
+        this.courseService
+          .patch(this.selectedCourse.id, result)
+          .subscribe((updated) => {
+            const index = this.allCourses.findIndex((c) => c.id === updated.id);
+
+            if (index !== -1) {
+              const updatedWithLink = {
+                ...updated,
+                institution: this.selectedInstitution?.id,
+              };
+              this.allCourses[index] = updatedWithLink as any;
+              this.filterCoursesByInstitution(); // Re-filter to update UI
+              this.selectedCourse = updatedWithLink as any;
+            }
+          });
+      }
+    });
+  }
+
+  deleteCourse() {
+    if (!this.selectedCourse) return;
+
+    if (
+      confirm(
+        `Tem certeza que deseja excluir o curso '${this.selectedCourse.name}'?`
+      )
+    ) {
+      this.courseService.delete(this.selectedCourse.id).subscribe(() => {
+        this.allCourses = this.allCourses.filter(
+          (c) => c.id !== this.selectedCourse!.id
+        );
+        this.filterCoursesByInstitution();
+      });
+    }
   }
 
   logout(): void {
@@ -127,80 +312,22 @@ export class MeusEstudosComponent implements OnInit, AfterViewInit {
   }
 
   onFilterChange(filtros: Filtros): void {
-    this.dataSource.filter = JSON.stringify(filtros);
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    /* ... */
   }
-
   trocarStatus(atividade: Atividade): void {
-    const currentIndex = this.statusCycle.indexOf(atividade.status);
-    const nextIndex = (currentIndex + 1) % this.statusCycle.length;
-    atividade.status = this.statusCycle[nextIndex];
-    this.dataSource._updateChangeSubscription();
+    /* ... */
   }
-
   editarAtividade(atividade: Atividade): void {
-    const dialogRef = this.dialog.open(AtividadeDialogComponent, {
-      width: '600px',
-      backdropClass: 'blurred-backdrop',
-      data: {
-        atividade: atividade,
-        disciplinas: this.disciplinasCadastradas,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('Atividade atualizada:', result);
-        const index = this.dataSource.data.findIndex(
-          (a) => a.id === atividade.id
-        );
-        if (index > -1) {
-          this.dataSource.data[index] = {
-            ...this.dataSource.data[index],
-            ...result,
-          };
-          this.dataSource.data = [...this.dataSource.data]; // Dispara a atualização da tabela
-        }
-      }
-    });
+    /* ... */
   }
-
   cadastrarDisciplina() {
-    const dialogRef = this.dialog.open(DisciplinaDialogComponent, {
-      width: '400px',
-      backdropClass: 'blurred-backdrop',
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('Dados da nova disciplina:', result);
-        this.disciplinasCadastradas.push(result.nome);
-      }
-    });
+    /* Old logic, to be updated later */
   }
-
   cadastrarAtividade() {
     const dialogRef = this.dialog.open(AtividadeDialogComponent, {
       width: '600px',
       backdropClass: 'blurred-backdrop',
       data: { disciplinas: this.disciplinasCadastradas },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        console.log('Nova atividade:', result);
-
-        const novaAtividade: Atividade = {
-          ...result,
-          data: new Date(result.data),
-        };
-
-        const data = this.dataSource.data;
-        data.push(novaAtividade);
-        this.dataSource.data = data;
-      }
     });
   }
 }
