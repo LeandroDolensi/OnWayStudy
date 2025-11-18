@@ -1,31 +1,207 @@
 <div class="main-container">
   <header class="main-header">
-    <img src="assets/logo_icon.png" alt="Logo OnWayStudy" class="header-logo" />
-    <div class="main-title">OnWayStudy</div>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <img
+        src="assets/logo_icon.png"
+        alt="Logo OnWayStudy"
+        class="header-logo"
+      />
+      <div class="main-title">OnWayStudy</div>
+    </div>
+
     <div class="user-actions">
-      <button mat-icon-button matTooltip="Sair">
+      <span class="welcome-text"
+        >Olá, <strong>{{ userName }}</strong></span
+      >
+      <button mat-icon-button matTooltip="Sair" (click)="logout()">
         <mat-icon>logout</mat-icon>
       </button>
     </div>
   </header>
 
   <main class="content-area">
+    <div class="context-bar">
+      <div class="context-item">
+        <div class="item-header">
+          <span class="item-label">Instituição</span>
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Nova Instituição"
+              (click)="openInstitutionDialog()"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Editar Instituição"
+              [disabled]="!selectedInstitution"
+              (click)="editInstitution()"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Excluir Instituição"
+              [disabled]="!selectedInstitution"
+              (click)="deleteInstitution()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-select
+            [(ngModel)]="selectedInstitution"
+            (selectionChange)="onInstitutionChange()"
+            placeholder="Selecione uma Instituição"
+          >
+            <mat-option *ngFor="let inst of institutions" [value]="inst">
+              {{ inst.name }}
+            </mat-option>
+            <mat-option
+              [value]="null"
+              disabled
+              *ngIf="institutions.length === 0"
+            >
+              Nenhuma encontrada
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="context-item">
+        <div class="item-header">
+          <span class="item-label">Curso</span>
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Novo Curso"
+              (click)="openCourseDialog()"
+              [disabled]="!selectedInstitution"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Editar Curso"
+              [disabled]="!selectedCourse"
+              (click)="editCourse()"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Excluir Curso"
+              [disabled]="!selectedCourse"
+              (click)="deleteCourse()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-select
+            [(ngModel)]="selectedCourse"
+            (selectionChange)="onCourseChange()"
+            [disabled]="!selectedInstitution"
+            placeholder="Selecione um Curso"
+          >
+            <mat-option *ngFor="let course of filteredCourses" [value]="course">
+              {{ course.name }}
+            </mat-option>
+            <mat-option
+              [value]="null"
+              disabled
+              *ngIf="filteredCourses.length === 0"
+            >
+              Nenhum curso encontrado
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="context-item">
+        <div class="item-header">
+          <span class="item-label">Disciplina</span>
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              color="primary"
+              matTooltip="Nova Disciplina"
+              (click)="cadastrarDisciplina()"
+              [disabled]="!selectedCourse"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Editar Disciplina"
+              [disabled]="!selectedDiscipline"
+              (click)="editarDisciplina()"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Excluir Disciplina"
+              [disabled]="!selectedDiscipline"
+              (click)="deletarDisciplina()"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width-field">
+          <mat-select
+            [(ngModel)]="selectedDiscipline"
+            (selectionChange)="onDisciplineChange()"
+            [disabled]="!selectedCourse"
+            placeholder="Selecione uma Disciplina"
+          >
+            <mat-option *ngFor="let disc of disciplines" [value]="disc">
+              {{ disc.name }}
+            </mat-option>
+            <mat-option
+              [value]="null"
+              disabled
+              *ngIf="disciplines.length === 0"
+            >
+              Nenhuma disciplina encontrada
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
     <div class="table-header">
       <h1>Minhas Atividades</h1>
       <div class="header-buttons">
-        <button mat-flat-button color="accent" (click)="cadastrarDisciplina()">
-          <mat-icon>class</mat-icon>
-          Cadastrar Disciplina
-        </button>
-        <button mat-flat-button color="primary" (click)="cadastrarAtividade()">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="cadastrarAtividade()"
+          [disabled]="disciplines.length === 0"
+        >
           <mat-icon>add_task</mat-icon>
-          Cadastrar Atividade
+          Nova Atividade
         </button>
       </div>
     </div>
 
     <app-filtros-tabela
-      [disciplinas]="disciplinasCadastradas"
+      [disciplinas]="disciplinaNames"
       [statusOptions]="statusOptions"
       (filterChange)="onFilterChange($event)"
     >
@@ -37,10 +213,12 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Disciplina</th>
           <td mat-cell *matCellDef="let row">{{ row.disciplina }}</td>
         </ng-container>
+
         <ng-container matColumnDef="atividade">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Atividade</th>
           <td mat-cell *matCellDef="let row">{{ row.atividade }}</td>
         </ng-container>
+
         <ng-container matColumnDef="data">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Data</th>
           <td mat-cell *matCellDef="let row">
@@ -68,6 +246,22 @@
             {{ row.peso !== null ? row.peso : "N/A" }}
           </td>
         </ng-container>
+
+        <ng-container matColumnDef="nota_esperada">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Nota Esperada
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span
+              [style.color]="
+                row.nota_esperada !== null ? 'inherit' : '#ffffff40'
+              "
+            >
+              {{ row.nota_esperada !== null ? row.nota_esperada : "N/A" }}
+            </span>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="resultado">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Resultado</th>
           <td mat-cell *matCellDef="let row">
@@ -82,9 +276,17 @@
               mat-icon-button
               color="primary"
               (click)="editarAtividade(row)"
-              matTooltip="Editar Atividade"
+              matTooltip="Editar"
             >
               <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deletarAtividade(row)"
+              matTooltip="Excluir"
+            >
+              <mat-icon>delete</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -92,7 +294,6 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-
       <mat-paginator
         [pageSizeOptions]="[5, 10, 25, 100]"
         [pageSize]="5"

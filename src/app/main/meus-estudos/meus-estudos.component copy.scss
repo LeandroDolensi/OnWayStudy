@@ -1,0 +1,295 @@
+// Importando a fonte e ícones
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+
+// --- Variáveis de Cores ---
+$neon-purple: #9b59b6;
+$turquoise-blue: #1abca1;
+$hot-pink: #e91e63;
+$white: #ffffff;
+$dark-bg: #1e1e2f;
+$light-bg: #282a36;
+$text-primary: #f8f8f2;
+$text-secondary: #bd93f9;
+$hover-bg: #3a3c4e;
+
+// [ACCESSIBILITY] High contrast color for Delete actions
+$high-contrast-warn: #ff5252;
+
+:host {
+  font-family: "Inter", sans-serif;
+}
+
+// ... (Header styles remain the same) ...
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .welcome-text {
+    font-size: 1.1rem; // Adjusted size
+    color: rgba($white, 0.9); // Increased opacity for readability
+
+    strong {
+      color: $turquoise-blue;
+    }
+  }
+
+  button {
+    color: $text-primary;
+    transition: transform 0.2s ease;
+    &:hover {
+      color: $hot-pink;
+      transform: scale(1.15); // Hover effect
+    }
+  }
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: $dark-bg;
+  color: $text-primary;
+}
+
+.main-header {
+  // ... (Existing header styles) ...
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(
+    90deg,
+    rgba(26, 188, 156, 0.1),
+    rgba(155, 89, 182, 0.1)
+  );
+  border-bottom: 1px solid rgba($white, 0.1);
+  flex-shrink: 0;
+
+  .header-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .main-title {
+    background-image: linear-gradient(100deg, $neon-purple, $turquoise-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    font-size: x-large;
+    font-weight: bold;
+  }
+}
+
+// --- Context Bar ---
+.context-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: rgba($light-bg, 0.6); // Slightly more opaque for contrast
+  border-radius: 12px;
+  border: 1px solid rgba($white, 0.1);
+
+  .context-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 300px;
+    gap: 0.5rem;
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 4px;
+
+      .item-label {
+        font-size: 0.95rem;
+        font-weight: 700; // Bolder for readability
+        color: $text-secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 4px; // Slight gap between buttons
+        transform-origin: right center;
+
+        // [UI/UX] Scale Effect on Buttons
+        button {
+          transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+          &:hover:not(:disabled) {
+            transform: scale(1.25); // Pop effect
+            z-index: 1;
+          }
+
+          // Colors specifically for MatIconButton inside context bar
+          &[color="primary"] {
+            color: $hot-pink;
+          }
+          &[color="accent"] {
+            color: $turquoise-blue;
+          }
+          &[color="warn"] {
+            color: $high-contrast-warn;
+          } // High contrast red
+        }
+      }
+    }
+
+    .full-width-field {
+      width: 100%;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// --- Conteúdo ---
+.content-area {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.table-header {
+  // ... existing ...
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 1rem;
+    button {
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      // Scale effect for flat buttons
+      transition: transform 0.2s ease, filter 0.2s;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px); // Slight lift
+        filter: brightness(1.1);
+      }
+    }
+    button[color="primary"] {
+      background-color: $hot-pink;
+      color: $white;
+    }
+  }
+}
+
+// --- Tabela ---
+.table-container {
+  background-color: $light-bg;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); // Deeper shadow
+}
+
+table {
+  width: 100%;
+}
+.mat-mdc-table {
+  background-color: transparent;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.2s ease-out;
+  &:hover {
+    background-color: $hover-bg;
+  }
+}
+
+.mat-mdc-header-cell {
+  background-color: rgba($dark-bg, 0.8);
+  color: $text-secondary;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mat-mdc-cell {
+  color: $text-primary;
+  border-bottom-color: rgba($white, 0.1);
+}
+
+// --- Ações na Tabela (Table Row Buttons) ---
+.mat-column-acoes {
+  text-align: center;
+  white-space: nowrap;
+
+  button {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    &:hover:not(:disabled) {
+      transform: scale(1.3); // Stronger scale for small table icons
+    }
+
+    &[color="primary"] {
+      color: $turquoise-blue;
+    } // Edit is Blue/Teal
+    &[color="warn"] {
+      color: $high-contrast-warn;
+    } // Delete is Bright Red
+  }
+}
+
+// --- Status Badge ---
+.status-badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #121212; // Dark text for contrast inside badge
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+    filter: brightness(1.1);
+  }
+
+  &.pendente {
+    background-color: #ffca28;
+  } // Brighter yellow
+  &.em-andamento {
+    background-color: #4fc3f7;
+  } // Brighter blue
+  &.concluído {
+    background-color: #69f0ae;
+  } // Brighter green
+}
+
+// --- Material Overrides ---
+::ng-deep .full-width-field,
+::ng-deep .dense-form-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: $dark-bg;
+    border-radius: 8px;
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  // Inputs text color
+  .mat-mdc-select-value {
+    color: $text-primary;
+  }
+  .mat-mdc-select-arrow {
+    color: $text-secondary;
+  }
+}

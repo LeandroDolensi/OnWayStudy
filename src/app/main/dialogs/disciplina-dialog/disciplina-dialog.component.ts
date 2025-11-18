@@ -1,15 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-disciplina-dialog',
@@ -24,21 +27,31 @@ import { MatDialogModule } from '@angular/material/dialog';
   templateUrl: './disciplina-dialog.component.html',
   styleUrl: './disciplina-dialog.component.scss',
 })
-export class DisciplinaDialogComponent {
-  form: FormGroup;
+export class DisciplinaDialogComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  public dialogRef = inject(MatDialogRef<DisciplinaDialogComponent>);
+  private data = inject(MAT_DIALOG_DATA, { optional: true });
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<DisciplinaDialogComponent>
-  ) {
+  form: FormGroup;
+  isEditing = false;
+
+  constructor() {
     this.form = this.fb.group({
-      nome: ['', Validators.required],
-      semestre: [
-        '',
-        [Validators.required, Validators.pattern('^[1-9][0-9]*$')],
-      ],
-      informacoesAdicionais: [''],
+      name: ['', Validators.required],
+      semester: ['', [Validators.required, Validators.min(1)]],
+      extra_information: [''],
     });
+  }
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.isEditing = true;
+      this.form.patchValue({
+        name: this.data.name,
+        semester: this.data.semester,
+        extra_information: this.data.extra_information,
+      });
+    }
   }
 
   onSave(): void {
